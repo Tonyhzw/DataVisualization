@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <style>
+        text{
+            font: 10px sans-serif;
+            text-anchor: middle;
+        }
+        .node {
+            stroke-width: 1.5px;
+        }
+
+        .node-active{
+            stroke-width: 1.5px;
+        }
+
+        .link {
+            stroke: #555;
+            stroke-opacity: .3;
+        }
+
+        .link-active {
+            stroke-opacity: 1;
+        }
+
+        .overlay {
+            fill: none;
+            pointer-events: all;
+        }
+
+        #map{
+            border: 2px #555 dashed;
+            width:1200px;
+            height:500px;
+        }
+    </style>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+<body>
+<div id="map"></div>
+<script>
+    var graph ={"nodes":[],"links":[]};
+
+    d3.text("data2.txt", function(error, classes) {
+        if (error) throw error;
+        var nodesPosition={},arrList={},index= 0,links=[],count=0;//记录是否已经放置过父节点
+        classes.split("\r\n").forEach(function (item) {//此处用\n最后一行有错
+            var arr=item.split("  ");
+            //每一条均要插入一条父节点和孩子节点
+            if(!arrList[arr[0]])
+                arrList[arr[0]]=(++index);
+
+            graph.nodes.push({"name":arrList[arr[0]],"rating":parseFloat(arr[1]),"id":arr[0],"class":arr[2]});
+            nodesPosition[arr[0]]=count++;
+
+            if(!arrList[arr[2]])
+                arrList[arr[2]]=(++index);
+            console.log(arrList[arr[0]],arr[0],arrList[arr[2]],arr[2]);
+            links.push({"source":arr[0],"target":arr[2]});
+
+            if(!nodesPosition[arr[2]]){
+                graph.nodes.push({"name":arrList[arr[2]],"rating":parseFloat(arr[1]),"id":arr[2],"class":arr[2]});
+                nodesPosition[arr[2]]=count++;
+            }else{
+                graph.nodes[nodesPosition[arr[2]]].rating+=parseFloat(arr[1]);
+            }
+        });
+        links.forEach(function(node){
+            graph.links.push({"source":nodesPosition[node.source],"target":nodesPosition[node.target]})
+        });
+
+        var margin = {top: -5, right: -5, bottom: -5, left: -5};
+        var width = 1200 - margin.left - margin.right,
+                height = 500- margin.top - margin.bottom;
+
+        var color = d3.scale.category20();
+
+        var force = d3.layout.force()
+                .charge(-200)
+                .linkDistance(50)
+                .size([width + margin.left + margin.right, height + margin.top + margin.bottom]);
+
+        var zoom = d3.behavior.zoom()
+                .scaleExtent([1, 10])
+                .on("zoom", zoomed);
+
+        var drag = d3.behavior.drag()
+                .origin(function(d) { return d; })
+                .on("dragstart", dragstarted)
+                .on("drag", dragged)
+                .on("dragend", dragended);
+
+
+        var svg = d3.select("#map").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+                .call(zoom);
+
+        var rect = svg.append("rect")
+                .attr("width", width)
+                .attr("height", height)
+                .style("fill", "none")
+                .style("pointer-events", "all");
+
+        var container = svg.append("g");
+
+        //d3.json('http://blt909.free.fr/wd/map2.json', function(error, graph) {
+        console.log("graph:",graph);
+        force
+                .nodes(graph.nodes)
+                .links(graph.links)
+                .start();
+        console.log("ok");
+        var link = container.append("g")
+                .attr("class", "links")
+                .selectAll(".link")
+                .data(graph.links)
+                .enter().append("line")
+                .attr("class", "link")
+                .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+        var node = container.append("g")
+                .attr("class", "nodes")
+                .selectAll(".node")
+                .data(graph.nodes)
+                .enter().append("g")
+                .attr("class", "node")
+                .attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; })
+                .call(drag);
+
+        node.append("circle")
+                .attr("r", function(d) { return d.weight * 2+ 12; })
+                .style("fill", function(d) { return color(d.class); })
+                .attr("opacity",function(d){ return d.id== d.class?1:0.7;});
+
+        node.append("text")
+                .attr("dy", ".3em")
+                .style("text-anchor", "middle")                                            //设置文本对齐
+                .text(function(d) { return d.id; });          //根据半径的大小来截取对应长度字符串（很重要）
+
+        node.append("title")
+                .text(function(d) {return d.id + "\n" + d.rating; });
+
+        force.on("tick", function() {
+            link.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+            node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        });
+
+        var linkedByIndex = {};
+        graph.links.forEach(function(d) {
+            linkedByIndex[d.source.index + "," + d.target.index] = 1;
+        });
+
+        function isConnected(a, b) {
+            return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index];
+        }
+
+        node.on("mouseover", function(d){
+
+            node.classed("node-active", function(o) {
+                thisOpacity = isConnected(d, o) ? true : false;
+                this.setAttribute('fill-opacity', thisOpacity);
+                return thisOpacity;
+            });
+
+            link.classed("link-active", function(o) {
+                return o.source === d || o.target === d ? true : false;
+            });
+
+            d3.select(this).classed("node-active", true);
+            d3.select(this).select("circle").transition()
+                    .duration(750)
+                   /* .attr("r", (d.weight * 2+ 12)*1.5);*/
+        })
+
+                .on("mouseout", function(d){
+
+                    node.classed("node-active", false);
+                    link.classed("link-active", false);
+
+                    d3.select(this).select("circle").transition()
+                            .duration(750)
+                            .attr("r", d.weight * 2+ 12);
+                });
+
+
+        function dottype(d) {
+            d.x = +d.x;
+            d.y = +d.y;
+            return d;
+        }
+
+        function zoomed() {
+            container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        }
+
+        function dragstarted(d) {
+            d3.event.sourceEvent.stopPropagation();
+
+            d3.select(this).classed("dragging", true);
+            force.start();
+        }
+
+        function dragged(d) {
+
+            d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+
+        }
+
+        function dragended(d) {
+
+            d3.select(this).classed("dragging", false);
+        }
+    });
+</script>
+</body>
+</body>
+</html>

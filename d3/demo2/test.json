@@ -1,0 +1,237 @@
+{
+  "name": "all",
+  "children": [
+    {
+      "name": "1月1日",
+      "children": [
+        {
+          "name": "event1",
+          "children": [
+            {
+              "name": "跨年",
+              "size": 1
+            },
+            {
+              "name": "演唱会",
+              "size": 1
+            },
+            {
+              "name": "新年快乐",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "event2",
+          "children": [
+            {
+              "name": "伊斯坦布尔",
+              "size": 1
+            },
+            {
+              "name": "土耳其",
+              "size": 1
+            },
+            {
+              "name": "枪击事件",
+              "size": 1
+            },
+            {
+              "name": "袭击",
+              "size": 1
+            },
+            {
+              "name": "死亡",
+              "size": 1
+            },
+            {
+              "name": "夜总会",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "event3",
+          "children": [
+            {
+              "name": "朴槿惠",
+              "size": 1
+            },
+            {
+              "name": "弹劾案",
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1月2日",
+      "children": [
+        {
+          "name": "event1",
+          "children": [
+            {
+              "name": "康师傅",
+              "size": 1
+            },
+            {
+              "name": "解散",
+              "size": 1
+            },
+            {
+              "name": "方便面",
+              "size": 1
+            },
+            {
+              "name": "台湾",
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1月3日",
+      "children": [
+        {
+          "name": "event1",
+          "children": [
+            {
+              "name": "流星雨",
+              "size": 1
+            },
+            {
+              "name": "今年首场",
+              "size": 1
+            },
+            {
+              "name": "120颗",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "event2",
+          "children": [
+            {
+              "name": "碾压",
+              "size": 1
+            },
+            {
+              "name": "女子骑摩托车",
+              "size": 1
+            },
+            {
+              "name": "幼童双腿",
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1月4日",
+      "children": [
+        {
+          "name": "event1",
+          "children": [
+            {
+              "name": "李冰冰",
+              "size": 1
+            },
+            {
+              "name": "恋情",
+              "size": 1
+            },
+            {
+              "name": "曝光",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "event2",
+          "children": [
+            {
+              "name": "攀枝花",
+              "size": 1
+            },
+            {
+              "name": "市委书记",
+              "size": 1
+            },
+            {
+              "name": "枪击",
+              "size": 1
+            },
+            {
+              "name": "国土资源局局长",
+              "size": 1
+            },
+            {
+              "name": "会展中心",
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1月5日",
+      "children": [
+        {
+          "name": "event1",
+          "children": [
+            {
+              "name": "腊八",
+              "size": 1
+            },
+            {
+              "name": "腊八粥",
+              "size": 1
+            },
+            {
+              "name": "节气",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "event2",
+          "children": [
+            {
+              "name": "反弹",
+              "size": 1
+            },
+            {
+              "name": "行情",
+              "size": 1
+            },
+            {
+              "name": "大盘",
+              "size": 1
+            },
+            {
+              "name": "涨停",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "event3",
+          "children": [
+            {
+              "name": "支付宝",
+              "size": 1
+            },
+            {
+              "name": "年账单",
+              "size": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
